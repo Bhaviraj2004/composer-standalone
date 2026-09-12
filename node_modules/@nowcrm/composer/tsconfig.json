@@ -8,13 +8,13 @@
     "@nowcrm/services/server": ["../../libs/services/src/server.ts"],
     "@nowcrm/services/client": ["../../libs/services/src/client.ts"]
     },
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"],
+    "types": ["node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules","**/*.test.*", "**/__mocks__/*", "**/__tests__/*"],
