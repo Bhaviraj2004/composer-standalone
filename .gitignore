@@ -66,3 +66,7 @@ storage/
 
 # TypeScript
 *.tsbuildinfo
+
+# AI Tools
+.claude/
+.windsurf/
