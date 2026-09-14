@@ -4,12 +4,15 @@ export interface Space {
   id: string;
   name: string;
   icon?: string;
+  color?: string;
+  companyName?: string;
+  timezone?: string;
 }
 
 interface SpaceContextType {
   spaces: Space[];
   activeSpace: Space | null;
-  createSpace: (name: string) => void;
+  createSpace: (name: string, companyName?: string, timezone?: string) => void;
   setActiveSpace: (space: Space | null) => void;
   deleteSpace: (id: string) => void;
   updateSpace: (id: string, updates: Partial<Space>) => void;
@@ -40,10 +43,25 @@ export function SpaceProvider({ children }: { children: React.ReactNode }) {
     }
   }, [activeSpace]);
 
-  const createSpace = (name: string) => {
+  const createSpace = (name: string, companyName?: string, timezone?: string) => {
     const icons = ['Building2', 'Briefcase', 'Globe', 'Rocket', 'Zap', 'Crown', 'Diamond', 'Target', 'Compass', 'Anchor', 'Box', 'Coffee', 'Music', 'Umbrella', 'Map'];
     const randomIcon = icons[Math.floor(Math.random() * icons.length)];
-    const newSpace = { id: Date.now().toString(), name, icon: randomIcon };
+    
+    const gradients = [
+      'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
+      'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+      'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
+      'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+      'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
+      'linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)'
+    ];
+    const randomColor = gradients[Math.floor(Math.random() * gradients.length)];
+
+    const newSpace = { id: Date.now().toString(), name, icon: randomIcon, color: randomColor, companyName, timezone };
     setSpaces([...spaces, newSpace]);
     if (!activeSpace) {
       setActiveSpace(newSpace);

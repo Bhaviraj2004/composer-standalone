@@ -4,6 +4,7 @@ import { VonageProvider } from "./vonage.provider";
 import { TelnyxProvider } from "./telnyx.provider";
 import { SinchProvider } from "./sinch.provider";
 import { RegionalProvider } from "./regional.provider";
+import { Fast2SmsProvider } from "./fast2sms.provider";
 
 export class SmsProviderFactory {
   static getProvider(providerName: string, configStr?: string | null): SmsProvider {
@@ -18,6 +19,8 @@ export class SmsProviderFactory {
         return new SinchProvider();
       case "regional":
         return new RegionalProvider();
+      case "fast2sms":
+        return new Fast2SmsProvider(configStr);
       default:
         throw new Error(`Unsupported SMS provider: ${providerName}`);
     }

@@ -18,6 +18,9 @@ export default function SMSCreateCampaignPage() {
   const [vonageFrom, setVonageFrom] = useState('');
   const [telnyxKey, setTelnyxKey] = useState('');
   const [telnyxFrom, setTelnyxFrom] = useState('');
+  const [fast2smsKey, setFast2smsKey] = useState('');
+  const [fast2smsRoute, setFast2smsRoute] = useState('q');
+  const [fast2smsSenderId, setFast2smsSenderId] = useState('');
 
   const [message, setMessage] = useState('');
   const [contacts, setContacts] = useState('');
@@ -37,6 +40,8 @@ export default function SMSCreateCampaignPage() {
         providerConfigObj = { apiKey: vonageKey, apiSecret: vonageSecret, fromNumber: vonageFrom };
       } else if (provider === 'telnyx') {
         providerConfigObj = { apiKey: telnyxKey, fromNumber: telnyxFrom };
+      } else if (provider === 'fast2sms') {
+        providerConfigObj = { apiKey: fast2smsKey, route: fast2smsRoute, senderId: fast2smsSenderId };
       }
 
       const response = await fetch('http://localhost:3020/api/sms/campaign', {
@@ -139,6 +144,7 @@ export default function SMSCreateCampaignPage() {
                     <option value="twilio">Twilio</option>
                     <option value="vonage">Vonage (Nexmo)</option>
                     <option value="telnyx">Telnyx</option>
+                    <option value="fast2sms">Fast2SMS</option>
                   </select>
                 </div>
 
@@ -188,6 +194,28 @@ export default function SMSCreateCampaignPage() {
                     <div className="form-group">
                       <label>Sender Phone Number</label>
                       <input type="text" value={telnyxFrom} onChange={e => setTelnyxFrom(e.target.value)} className="form-control" placeholder="+1234567890" />
+                    </div>
+                  </div>
+                )}
+
+                {provider === 'fast2sms' && (
+                  <div className="animate-fade-in" style={{ background: 'var(--bg-tertiary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                    <h3 style={{ marginBottom: '16px', fontSize: '1rem' }}>Fast2SMS Credentials</h3>
+                    <div className="form-group">
+                      <label>API Key</label>
+                      <input type="password" value={fast2smsKey} onChange={e => setFast2smsKey(e.target.value)} className="form-control" placeholder="Enter Authorization Key" />
+                    </div>
+                    <div className="form-group">
+                      <label>Route</label>
+                      <select value={fast2smsRoute} onChange={e => setFast2smsRoute(e.target.value)} className="form-control">
+                        <option value="q">Quick SMS (Default)</option>
+                        <option value="v3">V3 API</option>
+                        <option value="dlt">DLT (Production)</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Sender ID (Optional)</label>
+                      <input type="text" value={fast2smsSenderId} onChange={e => setFast2smsSenderId(e.target.value)} className="form-control" placeholder="e.g. FSTSMS (Required for DLT)" />
                     </div>
                   </div>
                 )}

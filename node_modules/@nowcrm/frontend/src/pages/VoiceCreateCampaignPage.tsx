@@ -128,6 +128,7 @@ export default function VoiceCreateCampaignPage() {
                   <select value={provider} onChange={e => setProvider(e.target.value)} className="form-control">
                     <option value="twilio">Twilio Voice</option>
                     <option value="vonage">Vonage Voice API</option>
+                    <option value="fast2sms">Fast2SMS Voice</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -139,6 +140,8 @@ export default function VoiceCreateCampaignPage() {
                     placeholder={
                       provider === 'twilio' 
                       ? '{\n  "sid": "ACxxx",\n  "token": "xxx",\n  "fromNumber": "+1234567890"\n}' 
+                      : provider === 'fast2sms'
+                      ? '{\n  "apiKey": "your-auth-key",\n  "route": "voice"\n}'
                       : '{\n  "appId": "xxx",\n  "privateKey": "xxx",\n  "fromNumber": "+1234567890"\n}'
                     }
                     style={{ height: '150px', fontFamily: 'monospace' }}

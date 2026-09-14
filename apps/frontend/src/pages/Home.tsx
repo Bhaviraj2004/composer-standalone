@@ -30,14 +30,25 @@ export default function Home() {
   const navigate = useNavigate();
   const { spaces, activeSpace, setActiveSpace, deleteSpace, createSpace } = useSpace();
   const [isCreating, setIsCreating] = useState(false);
+  const [createStep, setCreateStep] = useState(1);
+  const [generalInfo, setGeneralInfo] = useState({ companyName: '', timezone: 'UTC' });
   const [newSpaceName, setNewSpaceName] = useState('');
   const [spaceToDelete, setSpaceToDelete] = useState<{id: string, name: string} | null>(null);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
+    if (createStep === 1) {
+      if (generalInfo.companyName.trim()) {
+        setCreateStep(2);
+      }
+      return;
+    }
+    
     if (newSpaceName.trim()) {
-      createSpace(newSpaceName.trim());
+      createSpace(newSpaceName.trim(), generalInfo.companyName, generalInfo.timezone);
       setNewSpaceName('');
+      setGeneralInfo({ companyName: '', timezone: 'UTC' });
+      setCreateStep(1);
       setIsCreating(false);
     }
   };
@@ -73,39 +84,91 @@ export default function Home() {
           <h1 style={{ fontSize: '3rem', marginBottom: '8px' }}>Your Workspaces</h1>
           <p className="subtitle">Select a workspace to manage campaigns, or create a new one.</p>
         </div>
-        <button className="btn" onClick={() => setIsCreating(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <button className="btn" onClick={() => { setIsCreating(true); setCreateStep(1); }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Plus size={20} /> New Workspace
         </button>
       </div>
 
       {isCreating && (
         <div className="glass-panel animate-fade-in" style={{ marginBottom: '32px' }}>
-          <h3 style={{ marginBottom: '16px' }}>Create New Workspace</h3>
-          <form onSubmit={handleCreate} style={{ display: 'flex', gap: '16px', alignItems: 'flex-end' }}>
-            <div className="form-group" style={{ flex: 1, margin: 0 }}>
-              <label>Workspace Name</label>
-              <input 
-                type="text" 
-                className="form-control" 
-                value={newSpaceName} 
-                onChange={(e) => setNewSpaceName(e.target.value)} 
-                placeholder="e.g. Acme Corp" 
-                autoFocus 
-              />
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: createStep === 1 ? 1 : 0.5 }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: createStep === 1 ? 'var(--primary)' : 'var(--bg-tertiary)', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px', fontWeight: 'bold' }}>1</div>
+              <span>General Info</span>
             </div>
-            <button type="button" onClick={() => setIsCreating(false)} className="btn" style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' }}>
-              Cancel
-            </button>
-            <button type="submit" className="btn" disabled={!newSpaceName.trim()}>
-              Create
-            </button>
+            <div style={{ width: '40px', height: '2px', background: 'var(--glass-border)', alignSelf: 'center' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: createStep === 2 ? 1 : 0.5 }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: createStep === 2 ? 'var(--primary)' : 'var(--bg-tertiary)', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px', fontWeight: 'bold' }}>2</div>
+              <span>Workspace Setup</span>
+            </div>
+          </div>
+          
+          <form onSubmit={handleCreate}>
+            {createStep === 1 && (
+              <div className="animate-fade-in" style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label>Company Name</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={generalInfo.companyName} 
+                    onChange={(e) => setGeneralInfo({ ...generalInfo, companyName: e.target.value })} 
+                    placeholder="e.g. My Business" 
+                    autoFocus 
+                  />
+                </div>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label>Timezone</label>
+                  <select 
+                    className="form-control" 
+                    value={generalInfo.timezone}
+                    onChange={(e) => setGeneralInfo({ ...generalInfo, timezone: e.target.value })}
+                  >
+                    <option value="UTC">UTC</option>
+                    <option value="EST">Eastern Time (EST)</option>
+                    <option value="IST">India Standard Time (IST)</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px' }}>
+                  <button type="button" onClick={() => setIsCreating(false)} className="btn" style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' }}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn" disabled={!generalInfo.companyName.trim()}>
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {createStep === 2 && (
+              <div className="animate-fade-in" style={{ display: 'flex', gap: '16px', flexDirection: 'column' }}>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label>Workspace Name</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={newSpaceName} 
+                    onChange={(e) => setNewSpaceName(e.target.value)} 
+                    placeholder="e.g. Marketing Team" 
+                    autoFocus 
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px' }}>
+                  <button type="button" onClick={() => setCreateStep(1)} className="btn" style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' }}>
+                    Back
+                  </button>
+                  <button type="submit" className="btn" disabled={!newSpaceName.trim()}>
+                    Create Workspace
+                  </button>
+                </div>
+              </div>
+            )}
           </form>
         </div>
       )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
         {spaces.map(space => {
-          const IconComponent = space.icon ? (LucideIcons as any)[space.icon] : LayoutDashboard;
           return (
           <div 
             key={space.id} 
@@ -121,9 +184,21 @@ export default function Home() {
             onClick={() => handleSelectSpace(space)}
           >
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <div style={{ background: 'var(--glass-bg)', padding: '12px', borderRadius: '12px' }}>
-                  {IconComponent ? <IconComponent size={24} color="var(--primary)" /> : <LayoutDashboard size={24} color="var(--primary)" />}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                <div style={{ 
+                  background: space.color || 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)', 
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px', 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '22px',
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.1)'
+                }}>
+                  {space.name.charAt(0).toUpperCase()}
                 </div>
                 <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{space.name}</h3>
               </div>
@@ -150,7 +225,7 @@ export default function Home() {
             <LayoutDashboard size={48} color="var(--text-secondary)" style={{ marginBottom: '16px', opacity: 0.5 }} />
             <h3>No workspaces found</h3>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Create your first workspace to get started.</p>
-            <button className="btn" onClick={() => setIsCreating(true)}>
+            <button className="btn" onClick={() => { setIsCreating(true); setCreateStep(1); }}>
               Create Workspace
             </button>
           </div>

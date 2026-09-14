@@ -8,8 +8,6 @@ export default function Settings() {
 
   const tabs = [
     { id: 'general', name: 'General' },
-    { id: 'apikeys', name: 'AI API Keys' },
-    { id: 'smtp', name: 'Email / SMTP' },
   ];
 
   const handleSave = (e: React.FormEvent) => {
@@ -68,44 +66,11 @@ export default function Settings() {
             </div>
           )}
 
-          {activeTab === 'apikeys' && (
-            <div className="animate-fade-in">
-              <h2 style={{ marginBottom: '24px' }}>AI API Keys</h2>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Required for Composer's AI features.</p>
-              <div className="form-group">
-                <label>OpenAI API Key</label>
-                <input type="password" className="form-control" placeholder="sk-..." />
-              </div>
-              <div className="form-group">
-                <label>Anthropic API Key</label>
-                <input type="password" className="form-control" placeholder="sk-ant-..." />
-              </div>
-            </div>
-          )}
 
-          {activeTab === 'smtp' && (
-            <div className="animate-fade-in">
-              <h2 style={{ marginBottom: '24px' }}>Email Configuration</h2>
-              <div className="form-group">
-                <label>SMTP Host</label>
-                <input type="text" className="form-control" placeholder="smtp.gmail.com" />
-              </div>
-              <div className="form-group" style={{ display: 'flex', gap: '16px' }}>
-                <div style={{ flex: 1 }}>
-                  <label>SMTP Port</label>
-                  <input type="text" className="form-control" placeholder="587" />
-                </div>
-                <div style={{ flex: 2 }}>
-                  <label>SMTP User (Email)</label>
-                  <input type="email" className="form-control" placeholder="user@example.com" />
-                </div>
-              </div>
-              <div className="form-group">
-                <label>SMTP Password</label>
-                <input type="password" className="form-control" placeholder="••••••••" />
-              </div>
-            </div>
-          )}
+
+
+
+
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '32px', borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
             <button type="submit" className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
